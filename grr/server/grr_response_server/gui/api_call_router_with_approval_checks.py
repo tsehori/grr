@@ -829,6 +829,15 @@ class ApiCallRouterWithApprovalChecks(api_call_router.ApiCallRouterStub):
     # Everybody can get version of the GRR server.
     return self.delegate.GetGrrVersion(args, token=token)
 
+  # Grafana methods.
+  # =================
+  #
+  def CheckConnection(self, args, token=None):
+
+    # Everybody can check connection with Fleetspeak's database.
+    return api_grafana.ApiCheckConnectionHandler()
+
+
 
 # This class is kept here for backwards compatibility only.
 # TODO(user): Remove EOQ42017

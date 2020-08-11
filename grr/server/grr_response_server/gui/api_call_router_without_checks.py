@@ -24,6 +24,7 @@ from grr_response_server.gui.api_plugins import timeline as api_timeline
 from grr_response_server.gui.api_plugins import user as api_user
 from grr_response_server.gui.api_plugins import vfs as api_vfs
 from grr_response_server.gui.api_plugins import yara as api_yara
+from grr_response_server.gui.api_plugins import grafana as api_grafana
 
 
 class ApiCallRouterWithoutChecks(api_call_router.ApiCallRouterStub):
@@ -438,3 +439,9 @@ class ApiCallRouterWithoutChecks(api_call_router.ApiCallRouterStub):
       token: Optional[access_control.ACLToken] = None,
   ) -> api_metadata.ApiGetGrrVersionHandler:
     return api_metadata.ApiGetGrrVersionHandler()
+
+  # Grafana methods.
+  # =================
+  #
+  def CheckConnection(self, args, token=None):
+    return api_grafana.ApiCheckConnectionHandler()

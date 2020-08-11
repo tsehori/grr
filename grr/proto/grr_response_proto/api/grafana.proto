@@ -1,0 +1,9 @@
+// The following messages are used to communicate with Grafana to fetch datapoints from Fleetspeak.
+
+syntax = "proto2";
+
+package grr;
+
+message ApiCheckConnectionResult {
+  required bool connection_ok = 1;
+}

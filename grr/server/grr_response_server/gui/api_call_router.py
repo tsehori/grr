@@ -17,6 +17,7 @@ from grr_response_server import access_control
 from grr_response_server.gui import api_value_renderers
 from grr_response_server.gui.api_plugins import artifact as api_artifact
 from grr_response_server.gui.api_plugins import client as api_client
+from grr_response_server.gui.api_plugins import grafana as api_grafana
 from grr_response_server.gui.api_plugins import config as api_config
 from grr_response_server.gui.api_plugins import cron as api_cron
 from grr_response_server.gui.api_plugins import flow as api_flow
@@ -147,6 +148,7 @@ class RouterMethodMetadata(object):
         if ":" in arg:
           arg = arg[arg.find(":") + 1:]
         result.append(arg)
+    # print(result)
     return result
 
 
@@ -1293,6 +1295,48 @@ class ApiCallRouterStub(ApiCallRouter):
     """Get contents of a GRR binary (uploaded with grr_config_updater)."""
 
     raise NotImplementedError()
+
+  # Grafana JSON Datasource methods.
+  # ==============
+  #
+  @Category("Grafana")
+  @ResultType(api_grafana.ApiCheckConnectionResult)
+  @Http("GET", "/api/grafana")
+  @NoAuditLogRequired()
+  def CheckConnection(self, args, token=None):
+    """Checks whether the connection to Fleetspeak database is established."""
+
+    raise NotImplementedError()
+
+  # @Category("Grafana")
+  # @ArgsType(api_grafana.ApiListAvailableMetricsArgs)
+  # @ResultType(api_grafana.ApiListAvailableMetricsResult)
+  # @Http("POST", "/api/grafana/search")
+  # @NoAuditLogRequired()
+  # def ListAvailableMetrics(self, args, token=None):
+  #   """Return available metrics from Fleetspeak database."""
+
+  #   raise NotImplementedError()
+
+  # @Category("Grafana")
+  # @ArgsType(api_grafana.ApiGetClientMetricsArgs)
+  # @ResultType(api_grafana.ApiGetClientMetricsResult)
+  # @Http("POST", "/api/grafana/query")
+  # @NoAuditLogRequired()
+  # def GetClientMetrics(self, args, token=None):
+  #   """Return metrics from Fleetspeak database for client."""
+
+  #   raise NotImplementedError()
+
+  # @Category("Grafana")
+  # @ArgsType(api_grafana.ApiGetAnnotationsArgs)
+  # @ResultType(api_grafana.ApiGetAnnotationsResult)
+  # @Http("POST", "/api/grafana/annotations")
+  # @NoAuditLogRequired()
+  # def GetAnnotations(self, args, token=None):
+  #   """Return annotations from Fleetspeak database for Grafana."""
+
+  #   raise NotImplementedError()
 
   # Reflection methods.
   # ==================
