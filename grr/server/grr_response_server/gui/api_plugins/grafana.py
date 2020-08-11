@@ -10,9 +10,8 @@ from grr_response_proto.api import grafana_pb2
 from grr_response_server.gui import api_call_handler_base
 
 
-class ApiCheckConnectionResult(rdf_structs.RDFProtoStruct):
-  protobuf = grafana_pb2.ApiCheckConnectionResult
-  # rdf_deps = []
+class ApiCheckConnectionResultOK(rdf_structs.RDFProtoStruct):
+  protobuf = grafana_pb2.ApiCheckConnectionResultOK
 
 
 class ApiCheckConnectionHandler(api_call_handler_base.ApiCallHandler):
