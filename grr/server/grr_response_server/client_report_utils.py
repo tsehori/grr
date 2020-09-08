@@ -6,13 +6,27 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import collections
 from typing import Dict, Optional, Text
 
 from grr_response_core.lib import rdfvalue
 from grr_response_core.lib import time_utils
+from grr_response_core.lib import util
 from grr_response_core.lib.rdfvalues import stats as rdf_stats
 from grr_response_core.lib.rdfvalues import structs as rdf_structs
+from grr_response_core.stats import metrics
 from grr_response_server import data_store
+
+
+OS_RELEASE_BREAKDOWN = metrics.Gauge("os_release_breakdown",
+                                     int,
+                                     fields=[("client_labels", str)])
+OS_TYPE_BREAKDOWN = metrics.Gauge("os_type_breakdown",
+                                     int,
+                                     fields=[("client_labels", str)])
+GRR_VERSION_BREAKDOWN = metrics.Gauge("grr_version_breakdown",
+                                     int,
+                                     fields=[("client_labels", str)])
 
 
 def WriteGraphSeries(graph_series: rdf_stats.ClientGraphSeries, label: Text):
@@ -24,6 +38,32 @@ def WriteGraphSeries(graph_series: rdf_stats.ClientGraphSeries, label: Text):
     label: Client label by which data in the graph_series was aggregated.
   """
   data_store.REL_DB.WriteClientGraphSeries(graph_series, label)
+
+
+def WriteGraphSeriesToStatsCollector(graph_series: rdf_stats.ClientGraphSeries,
+                                     label: Text,
+                                     report_type: rdf_structs.EnumNamedValue):
+  """Writes graph series for a particular client label to the Stats Collector.
+
+  Args:
+    graph_series: A series of rdf_stats.Graphs containing aggregated data for a
+      particular report-type.
+    label: Client label by which data in the graph_series was aggregated.
+    report_type: rdf_stats.ClientGraphSeries.ReportType for the client stats.
+  """
+  # util.precondition.AssertType(graph_series, rdf_stats.ClientGraphSeries)
+  metric_to_update = None
+  if report_type == rdf_stats.ClientGraphSeries.ReportType.UNKNOWN:
+    raise ValueError("Report-type for graph series must be set.")
+  elif report_type == rdf_stats.ClientGraphSeries.ReportType.OS_RELEASE:
+    metric_to_update = OS_RELEASE_BREAKDOWN
+  elif report_type == rdf_stats.ClientGraphSeries.ReportType.OS_TYPE:
+    metric_to_update = OS_TYPE_BREAKDOWN
+  elif report_type == rdf_stats.ClientGraphSeries.ReportType.GRR_VERSION:
+    metric_to_update = GRR_VERSION_BREAKDOWN
+  for graph in graph_series.graphs:
+    for sample in graph:
+      metric_to_update.SetValue(value=sample.y_value, fields=[sample.label])
 
 
 def FetchAllGraphSeries(

@@ -64,6 +64,8 @@ def _WriteFleetBreakdownStatsToDB(fleet_stats, report_type):
 
   for client_label, graph_series in graph_series_by_label.items():
     client_report_utils.WriteGraphSeries(graph_series, client_label)
+    client_report_utils.WriteGraphSeriesToStatsCollector(
+        graph_series, client_label, report_type)
 
 
 class GRRVersionBreakDownCronJob(cronjobs.SystemCronJobBase):
